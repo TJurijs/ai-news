@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect, useCallback, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { X, Save, Sparkles, Image as ImageIcon, RefreshCw, ExternalLink, Crop as CropIcon, Check, Monitor, Square, RectangleHorizontal } from 'lucide-react';
 import ReactCrop, { Crop, PixelCrop, centerCrop, makeAspectCrop } from 'react-image-crop';
 import 'react-image-crop/dist/ReactCrop.css';
@@ -99,18 +99,29 @@ export function ArticleEditor({ article, onSave, onCancel }: ArticleEditorProps)
 
         setGeneratingImage(true);
         const prompt = formData.imageSuggestion || formData.summary.substring(0, 100);
-        const encodedPrompt = encodeURIComponent(prompt);
-        const seed = Math.floor(Math.random() * 1000);
-        const newImageUrl = `https://image.pollinations.ai/prompt/${encodedPrompt}?seed=${seed}&width=800&height=600&nologo=true&model=google-nanobanana`;
 
-        const img = new Image();
-        img.src = newImageUrl;
-        img.onload = () => {
-            setFormData(prev => ({ ...prev, imageUrl: newImageUrl }));
-            setGeneratingImage(false);
-        };
-        img.onerror = () => {
+        try {
+            const response = await fetch('/api/generate-image', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ prompt }),
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.error || 'Failed to generate image');
+            }
+
+            const data = await response.json();
+            if (data.imageUrl) {
+                setFormData(prev => ({ ...prev, imageUrl: data.imageUrl }));
+            }
+        } catch (error) {
+            console.error("Error generating image:", error);
             alert("Failed to generate image. Please try again.");
+        } finally {
             setGeneratingImage(false);
         }
     };
@@ -212,7 +223,7 @@ export function ArticleEditor({ article, onSave, onCancel }: ArticleEditorProps)
                             <input
                                 type="text"
                                 name="headline"
-                                value={formData.headline}
+                                value={formData.headline || ''}
                                 onChange={handleChange}
                                 required
                                 className="w-full px-4 py-2 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
@@ -226,7 +237,7 @@ export function ArticleEditor({ article, onSave, onCancel }: ArticleEditorProps)
                             </label>
                             <textarea
                                 name="summary"
-                                value={formData.summary}
+                                value={formData.summary || ''}
                                 onChange={handleChange}
                                 required
                                 rows={5}
@@ -244,7 +255,7 @@ export function ArticleEditor({ article, onSave, onCancel }: ArticleEditorProps)
                                     <input
                                         type="text"
                                         name="imageSuggestion"
-                                        value={formData.imageSuggestion}
+                                        value={formData.imageSuggestion || ''}
                                         onChange={handleChange}
                                         className="flex-1 px-4 py-2 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                         placeholder="Describe the image needed"
@@ -270,21 +281,33 @@ export function ArticleEditor({ article, onSave, onCancel }: ArticleEditorProps)
                                                 <div key={idx} className="flex items-center bg-zinc-100 dark:bg-zinc-800 rounded-full px-3 py-1 border border-zinc-200 dark:border-zinc-700">
                                                     <button
                                                         type="button"
-                                                        onClick={() => {
+                                                        onClick={async () => {
                                                             setFormData(prev => ({ ...prev, imageSuggestion: query }));
-                                                            const seed = Math.floor(Math.random() * 1000);
-                                                            const encodedPrompt = encodeURIComponent(query);
-                                                            const newImageUrl = `https://image.pollinations.ai/prompt/${encodedPrompt}?seed=${seed}&width=800&height=600&nologo=true&model=google-nanobanana`;
                                                             setGeneratingImage(true);
-                                                            const img = new Image();
-                                                            img.src = newImageUrl;
-                                                            img.onload = () => {
-                                                                setFormData(prev => ({ ...prev, imageUrl: newImageUrl, imageSuggestion: query }));
+
+                                                            try {
+                                                                const response = await fetch('/api/generate-image', {
+                                                                    method: 'POST',
+                                                                    headers: {
+                                                                        'Content-Type': 'application/json',
+                                                                    },
+                                                                    body: JSON.stringify({ prompt: query }),
+                                                                });
+
+                                                                if (!response.ok) {
+                                                                    throw new Error('Failed to generate image');
+                                                                }
+
+                                                                const data = await response.json();
+                                                                if (data.imageUrl) {
+                                                                    setFormData(prev => ({ ...prev, imageUrl: data.imageUrl, imageSuggestion: query }));
+                                                                }
+                                                            } catch (error) {
+                                                                console.error("Error generating image:", error);
+                                                                alert("Failed to generate image.");
+                                                            } finally {
                                                                 setGeneratingImage(false);
-                                                            };
-                                                            img.onerror = () => {
-                                                                setGeneratingImage(false);
-                                                            };
+                                                            }
                                                         }}
                                                         className="text-xs text-zinc-700 dark:text-zinc-300 hover:text-blue-600 dark:hover:text-blue-400 mr-2"
                                                         title="Generate AI Image for this topic"
@@ -315,7 +338,7 @@ export function ArticleEditor({ article, onSave, onCancel }: ArticleEditorProps)
                             <input
                                 type="url"
                                 name="imageUrl"
-                                value={formData.imageUrl}
+                                value={formData.imageUrl || ''}
                                 onChange={handleChange}
                                 className="w-full px-4 py-2 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                 placeholder="https://example.com/image.jpg"
@@ -329,7 +352,7 @@ export function ArticleEditor({ article, onSave, onCancel }: ArticleEditorProps)
                             <input
                                 type="url"
                                 name="sourceUrl"
-                                value={formData.sourceUrl}
+                                value={formData.sourceUrl || ''}
                                 onChange={handleChange}
                                 className="w-full px-4 py-2 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                 placeholder="https://example.com/news-article"
