@@ -1,9 +1,9 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
-import { Plus, Download, Loader2, Sparkles, Copy, Trash2 } from 'lucide-react';
-import { ArticleCard } from '../components/ArticleCard';
-import { ArticleEditor } from '../components/ArticleEditor';
+import { Sparkles, Loader2, Plus, Trash2, Copy } from 'lucide-react';
+import { ArticleEditor } from '@/components/ArticleEditor';
+import { ArticleCard } from '@/components/ArticleCard';
 
 interface Article {
   id: string;
@@ -17,7 +17,6 @@ interface Article {
 }
 
 export default function Home() {
-  const [url, setUrl] = useState('');
   const [articles, setArticles] = useState<Article[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -189,7 +188,7 @@ export default function Home() {
           <div className="flex items-center gap-2">
             <Sparkles className="text-blue-600" />
             <h1 className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-purple-600">
-              AI Newsletter
+              Newsletter
             </h1>
           </div>
           <div className="flex gap-2">

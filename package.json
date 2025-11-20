@@ -1,7 +1,10 @@
 {
-  "name": "ai-news",
+  "name": "ai-newsletter-generator",
   "version": "0.1.0",
-  "private": true,
+  "description": "An AI-powered newsletter generator that curates, summarizes, and illustrates news articles.",
+  "private": false,
+  "license": "MIT",
+  "author": "Jurijs Tolokoncevs",
   "scripts": {
     "dev": "next dev",
     "build": "next build",

@@ -1,36 +1,88 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# AI Newsletter Generator
 
-## Getting Started
+An intelligent, AI-powered application designed to streamline the creation of corporate newsletters. This tool automates the process of curating, summarizing, and illustrating news articles, making it easy to produce high-quality, engaging content.
 
-First, run the development server:
+## Features
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+*   **AI-Powered Summarization**: Automatically generates concise, informative summaries of news articles using Google's Gemini Pro model.
+*   **Smart Headline Generation**: Creates catchy, engaging headlines tailored to your audience.
+*   **Automated Image Generation**:
+    *   Suggests relevant image prompts based on article content.
+    *   Generates high-quality images using Google's Gemini 3 Pro Image Preview model.
+    *   Provides search queries for finding alternative images.
+*   **Content Extraction**: Seamlessly extracts content from URLs using Jina Reader, handling complex layouts and removing clutter.
+*   **Interactive Editor**:
+    *   Review and edit generated headlines and summaries.
+    *   Regenerate images with custom prompts.
+    *   Crop and adjust images to fit standard newsletter formats.
+*   **Outlook-Ready Export**: Formats the final newsletter for easy copy-pasting directly into Microsoft Outlook, ensuring consistent layout and design.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Tech Stack
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+*   **Framework**: [Next.js 16](https://nextjs.org/) (App Router)
+*   **Language**: [TypeScript](https://www.typescriptlang.org/)
+*   **AI Models**:
+    *   Text: Google Gemini 2.5 Flash (via `google-generative-ai`)
+    *   Image: Google Gemini 3 Pro Image Preview (via REST API)
+*   **Styling**: [Tailwind CSS](https://tailwindcss.com/)
+*   **Icons**: [Lucide React](https://lucide.dev/)
+*   **Content Extraction**: [Jina Reader](https://jina.ai/reader)
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Quickstart
 
-## Learn More
+### Prerequisites
 
-To learn more about Next.js, take a look at the following resources:
+*   Node.js 18+ installed.
+*   A Google Gemini API Key. You can get one from [Google AI Studio](https://aistudio.google.com/).
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### Installation
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+1.  **Clone the repository:**
 
-## Deploy on Vercel
+    ```bash
+    git clone https://github.com/yourusername/ai-newsletter-generator.git
+    cd ai-newsletter-generator
+    ```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+2.  **Install dependencies:**
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+    ```bash
+    npm install
+    ```
+
+3.  **Set up environment variables:**
+
+    Create a `.env.local` file in the root directory and add your Gemini API key:
+
+    ```env
+    GEMINI_API_KEY=your_api_key_here
+    ```
+
+4.  **Run the development server:**
+
+    ```bash
+    npm run dev
+    ```
+
+5.  **Open the application:**
+
+    Navigate to `http://localhost:3000` in your browser.
+
+## Usage
+
+1.  **Paste a URL**: Enter the URL of a news article you want to include in your newsletter.
+2.  **Generate**: Click "Generate" to let the AI extract content, summarize it, and create an image.
+3.  **Review & Edit**:
+    *   Edit the headline or summary if needed.
+    *   If you don't like the generated image, use the suggested search queries or type your own prompt to generate a new one.
+    *   Crop the image to the desired aspect ratio.
+4.  **Add to Newsletter**: Click "Add to Newsletter" to save the article to your current session.
+5.  **Export**: Once you've added all your articles, copy the formatted content and paste it into your Outlook newsletter draft.
+
+## License
+
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+
+## Author
+
+Jurijs Tolokoncevs

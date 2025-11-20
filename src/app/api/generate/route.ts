@@ -1,7 +1,4 @@
 import { GoogleGenerativeAI, SchemaType, HarmCategory, HarmBlockThreshold } from "@google/generative-ai";
-import * as cheerio from "cheerio";
-import { Readability } from "@mozilla/readability";
-import { JSDOM } from "jsdom";
 import { NextResponse } from "next/server";
 
 export async function POST(req: Request) {
@@ -91,7 +88,7 @@ export async function POST(req: Request) {
 
     // 3. Generate content
     const prompt = `
-      You are an expert news editor helping to create a newsletter for the SAP department of EPAM Systems.
+      You are an expert news editor helping to create a newsletter for a corporate technology department.
       
       Analyze the following article content and provide:
       1. A catchy, engaging headline (max 15 words).
