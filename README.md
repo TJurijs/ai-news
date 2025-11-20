@@ -2,7 +2,7 @@
 
 An intelligent, AI-powered application designed to streamline the creation of corporate newsletters. This tool automates the process of curating, summarizing, and illustrating news articles, making it easy to produce high-quality, engaging content.
 
-## Features
+## Features 
 
 *   **AI-Powered Summarization**: Automatically generates concise, informative summaries of news articles using Google's Gemini Pro model.
 *   **Smart Headline Generation**: Creates catchy, engaging headlines tailored to your audience.
